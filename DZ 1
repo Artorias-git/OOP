@@ -1,0 +1,120 @@
+from datetime import datetime as dt
+class H:
+    dead = "dead"
+    very_hungry = "very_hungry"
+    hungry = "hungry"
+    normal = "normal"
+    bit = "bit"
+    overeat = "overeat"
+
+class M:
+    Very_sad = "Very_sad"
+    sad = "sad"
+    normal = "normal"
+    good = "good"
+    happy = "happy"
+
+class Zver:
+    """tamagoch"""
+    def __init__(self, name = "Kolia", eat_timeout = 10, play_timeout = 10):
+        self.__name = name
+        self.__eat_timeout = eat_timeout
+        self.__play_timeout = play_timeout
+        self.__st = dt.now()
+        self.__hungry = H.normal
+        self.__mood = M.normal
+        self.__played_count = 0
+        self.__eated_amount = 0
+
+    def chek(self):
+        et = self.__eat_timeout
+        time_without_eat = (dt.now() - self.__st).total_seconds() - self.__eated_amount * et
+        dif = time_without_eat
+        if (dif < et) and (dif > (-1 * et)):
+            self.__hungry = H.normal
+        if (dif > (-2 * et)) and (dif < (-1 * et)):
+            self.__hungry = H.bit
+        if (dif < -(2 * et)) and (dif > (-3 * et)):
+            self.__hungry = H.overeat
+        if dif < (-3 * et):
+            self.__hungry = H.dead
+            print(self.__name, "is dead. He burst")
+            breakpoint()
+        if (dif > et) and (dif < (2 * et)):
+            self.__hungry = H.hungry
+        if (dif < (3 * et)) and (dif > (2 * et)):
+            self.__hungry = H.very_hungry
+        if dif > (3 * et):
+            self.__hungry = H.dead
+            print(self.__name, "died of hunger")
+            breakpoint()
+
+        ep = self.__play_timeout
+        time_without_play = (dt.now() - self.__st).total_seconds() - self.__played_count * ep
+        dif = time_without_play
+        if (dif < ep) and (dif > (-1 * ep)):
+            self.__mood = M.normal
+        if (dif > (-2 * ep)) and (dif < (-1 * ep)):
+            self.__mood = M.good
+        if (dif < -(2 * ep)) and (dif > (-3 * ep)):
+            self.__mood = M.happy
+        if (dif > ep) and (dif < (2 * ep)):
+            self.__mood = M.sad
+        if (dif < (3 * ep)) and (dif > (2 * ep)):
+            self.__mood = M.Very_sad
+        if dif > (3 * ep):
+            print(self.__name, "run away")
+            breakpoint()
+
+    def stats(self):
+        Zver.chek(self)
+        print(self.__hungry)
+        print(self.__mood)
+
+    def eat(self, amount = 0):
+        self.__eated_amount =  self.__eated_amount + amount
+        Zver.chek(self)
+        print(self.__hungry)
+
+    def play(self):
+        self.__played_count +=1
+        Zver.chek(self)
+        print(self.__mood)
+
+    def time(self):
+        print("ел", "{0:.2f}".format((dt.now() - self.__st).total_seconds() - self.__eated_amount * self.__eat_timeout), "секунд назад")
+        print("Играл", "{0:.2f}".format((dt.now() - self.__st).total_seconds() - self.__played_count * self.__play_timeout), "секунд назад")
+
+
+m = Zver()
+print("Start"
+      "1 - покормить"
+      "2 - поиграть"
+      "3 - узнать состояние"
+      "4 - узнать время без еды и игр"
+      "0 - завершить программу")
+while True:
+    print("-----------------------")
+    a = int(input())
+    if a == 0:
+        print("Хотите закончить? 1 - да, 0 - нет")
+        b = int(input())
+        if b == 1:
+            print("end")
+            break
+        else:
+            continue
+    elif a == 1:
+        print("сколько еды?")
+        m.eat(float(input()))
+        continue
+    elif a == 2:
+        print("вы порадовали питомца")
+        m.play()
+        continue
+    elif a == 3:
+        m.stats()
+        continue
+    elif a == 4:
+        m.time()
+        continue
